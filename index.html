@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lời nhắn đến bạn bè</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e6f7ff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #005a87;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 90, 135, 0.2);
+            padding: 40px;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            z-index: 2;
+        }
+
+        h1 {
+            color: #0078b6;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        input {
+            padding: 12px 15px;
+            border: 2px solid #a0d8ef;
+            border-radius: 8px;
+            width: 70%;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0078b6;
+        }
+
+        button {
+            background-color: #0078b6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #005a87;
+        }
+
+        .message-box {
+            background-color: #e1f5fe;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .message-content {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .heart {
+            color: #ff6b6b;
+            font-size: 24px;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #64b5f6;
+        }
+
+        /* CSS cho GIF */
+        .gif-container {
+            margin-top: 20px;
+            display: none;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .gif-image {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 10px;
+        }
+
+        /* CSS cho phần YouTube */
+        .youtube-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .youtube-embed {
+            width: 100%;
+            max-width: 560px;
+            height: 315px;
+            border: none;
+            border-radius: 10px;
+        }
+
+        /* Kết hợp từ mã CSS trái tim */
+        #heart-animation {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        #pinkboard {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .chu {
+            color: rgb(214, 95, 182);
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 20%;
+            z-index: 3;
+            font-size: 28px;
+            display: none;
+        }
+
+        /* Nút quay lại */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid #0078b6;
+            color: #0078b6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+            display: none;
+        }
+
+        .back-btn:hover {
+            background-color: #0078b6;
+            color: white;
+        }
+
+        /* CSS cho GIF trong hiệu ứng trái tim */
+        .special-gif {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            display: none;
+            max-width: 300px;
+        }
+
+        /* Đảm bảo trang web vẫn hoạt động trên thiết bị di động */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+            
+            input {
+                width: 90%;
+            }
+
+            .youtube-embed {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" id="back-btn" title="Quay lại">←</button>
+
+    <div id="heart-animation">
+        <canvas id="pinkboard"></canvas>
+        <h1 class="chu" id="love-message">I Love You</h1>
+        <img src="https://media.tenor.com/images/3c887d766ed20ae28962bd1fe42808a6/tenor.gif" alt="Animated Hearts" class="special-gif" id="special-gif">
+    </div>
+    
+    <div class="container" id="main-container">
+        <h1>Lời nhắn đến bạn bè</h1>
+        <p>Nhập tên của bạn để xem lời nhắn dành riêng cho bạn</p>
+        
+        <div class="input-group">
+            <input type="text" id="name-input" placeholder="Nhập tên của bạn...">
+            <br>
+            <button id="check-btn">Xem lời nhắn</button>
+        </div>
+                
+        <div class="message-box" id="message-box">
+            <p class="message-content" id="message-content"></p>
+        </div>
+
+        <div class="gif-container" id="gif-container">
+            <img src="https://media.tenor.com/images/4ed84a6a91326793bd8d068a85410549/tenor.gif" alt="Friendship GIF" class="gif-image" id="gif-image">
+        </div>
+
+        <div class="youtube-container" id="youtube-container">
+            <iframe id="youtube-player" class="youtube-embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        
+        <footer>
+            Made with <span class="heart">♥</span> | GitHub Pages
+        </footer>
+    </div>
+
+    <script>
+        // Danh sách bạn bè và lời nhắn tương ứng
+        const friends = [
+            {
+                name: "Xuan Anh",
+                message: "Xuân Anh thân mến, cảm ơn bạn vì tất cả những kỷ niệm đáng nhớ. Tình bạn của chúng ta thật đặc biệt! ❤️",
+                special: true,  // Đánh dấu đây là người đặc biệt để hiển thị hiệu ứng trái tim
+                youtubeId: "hNSPzNe5Qko" // ID video YouTube "Love Yourself" - Justin Bieber
+            },
+            {
+                name: "Hùng",
+                message: "Hùng ơi, cảm ơn bạn đã luôn bên cạnh và hỗ trợ mình trong những lúc khó khăn. Tình bạn của chúng ta thật đáng trân trọng!",
+                showGif: true,
+                gifUrl: "https://media.tenor.com/images/f193481c81904cc4af838b0d82985625/tenor.gif"
+            },
+            {
+                name: "Linh",
+                message: "Linh à, cảm ơn bạn đã là người bạn tốt nhất của mình. Những kỷ niệm chúng ta có với nhau sẽ mãi là những điều quý giá trong cuộc đời mình.",
+                youtubeId: "8xg3vE8Ie_E" // ID video YouTube "Count on Me" - Bruno Mars
+            },
+            {
+                name: "Tuấn",
+                message: "Tuấn ơi, chúc bạn luôn thành công trong cuộc sống và sự nghiệp. Mình rất cảm kích về những lời khuyên và sự giúp đỡ của bạn suốt thời gian qua.",
+                showGif: true,
+                gifUrl: "https://media.tenor.com/images/2f4a72f8a25c0a27f2097b0f5a018ad6/tenor.gif"
+            },
+            {
+                name: "Mai",
+                message: "Mai à, cảm ơn bạn vì đã luôn lắng nghe và thấu hiểu mình. Bạn là người bạn tuyệt vời mà ai cũng mong muốn có được.",
+                youtubeId: "QUwxKWT6m7U" // ID video YouTube "That's What Friends Are For"
+            },
+            {
+                name: "Dũng",
+                message: "Dũng ơi, cảm ơn vì những nụ cười và tiếng cười mà bạn mang lại. Mỗi khi gặp khó khăn, hình ảnh về bạn luôn giúp mình vượt qua.",
+                showGif: true,
+                gifUrl: "https://media.tenor.com/images/56350dfdcd3a5fa4fd66e9e87f9574bb/tenor.gif"
+            }
+            // Thêm bạn bè khác vào đây
+        ];
+
+        // Thông báo mặc định cho người không có trong danh sách
+        const defaultMessage = "Bạn không có trong danh sách, cảm ơn đã ghé thăm!";
+        
+        // Lấy các phần tử DOM
+        const nameInput = document.getElementById('name-input');
+        const checkBtn = document.getElementById('check-btn');
+        const messageBox = document.getElementById('message-box');
+        const messageContent = document.getElementById('message-content');
+        const heartAnimation = document.getElementById('heart-animation');
+        const mainContainer = document.getElementById('main-container');
+        const loveMessage = document.getElementById('love-message');
+        const gifContainer = document.getElementById('gif-container');
+        const gifImage = document.getElementById('gif-image');
+        const youtubeContainer = document.getElementById('youtube-container');
+        const youtubePlayer = document.getElementById('youtube-player');
+        const backBtn = document.getElementById('back-btn');
+        const specialGif = document.getElementById('special-gif');
+
+        // Xử lý nút quay lại
+        backBtn.addEventListener('click', function() {
+            // Ẩn hiệu ứng trái tim và hiển thị container chính
+            heartAnimation.style.display = 'none';
+            mainContainer.style.display = 'block';
+            backBtn.style.display = 'none';
+            specialGif.style.display = 'none';
+            stopYouTubeVideo();
+        });
+
+        // Hàm kiểm tra tên và hiển thị thông báo
+        function checkName() {
+            const name = nameInput.value.trim();
+            if (!name) {
+                alert('Vui lòng nhập tên của bạn');
+                return;
+            }
+
+            // Reset hiển thị
+            gifContainer.style.display = 'none';
+            youtubeContainer.style.display = 'none';
+
+            // Tìm bạn trong danh sách
+            const friend = friends.find(friend => friend.name.toLowerCase() === name.toLowerCase());
+            
+            // Hiển thị lời nhắn
+            if (friend) {
+                messageContent.textContent = friend.message;
+                
+                // Nếu là người đặc biệt (Xuan Anh), hiển thị hiệu ứng trái tim
+                if (friend.special) {
+                    // Hiển thị hiệu ứng trái tim và ẩn container chính
+                    heartAnimation.style.display = 'block';
+                    mainContainer.style.display = 'none';
+                    loveMessage.style.display = 'block';
+                    backBtn.style.display = 'flex';
+                    specialGif.style.display = 'block';
+                    loveMessage.textContent = "Xuân Anh, Mình Yêu Bạn ❤️";
+                    
+                    // Khởi chạy animation trái tim
+                    initHeartAnimation();
+                    
+                    // Nếu có YouTube ID, cập nhật và tự động phát
+                    if (friend.youtubeId) {
+                        updateYouTubeVideo(friend.youtubeId, true);
+                    }
+                } else {
+                    messageBox.style.display = 'block';
+                    
+                    // Hiển thị GIF nếu có
+                    if (friend.showGif && friend.gifUrl) {
+                        gifImage.src = friend.gifUrl;
+                        gifContainer.style.display = 'block';
+                    }
+                    
+                    // Hiển thị YouTube nếu có
+                    if (friend.youtubeId) {
+                        updateYouTubeVideo(friend.youtubeId);
+                        youtubeContainer.style.display = 'block';
+                    }
+                }
+            } else {
+                messageContent.textContent = defaultMessage;
+                messageBox.style.display = 'block';
+            }
+        }
+
+        // Hàm cập nhật video YouTube
+        function updateYouTubeVideo(videoId, autoplay = false) {
+            const autoplayParam = autoplay ? '1' : '0';
+            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=${autoplayParam}`;
+        }
+        
+        // Hàm dừng video YouTube
+        function stopYouTubeVideo() {
+            youtubePlayer.src = youtubePlayer.src.split('?')[0] + '?enablejsapi=1';
+        }
+
+        // Thêm sự kiện click cho nút
+        checkBtn.addEventListener('click', checkName);
+        
+        // Thêm sự kiện nhấn Enter cho input
+        nameInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkName();
+            }
+        });
+
+        // Mã nguồn cho hiệu ứng trái tim
+        function initHeartAnimation() {
+            /*
+            * Settings
+            */
+            var settings = {
+                particles: {
+                    length: 500, 
+                    duration: 2, 
+                    velocity: 100, 
+                    effect: -0.75, 
+                    size: 30, 
+                },
+            };
+            
+            (function(){var b=0;var c=["ms","moz","webkit","o"];for(var a=0;a<c.length&&!window.requestAnimationFrame;++a){window.requestAnimationFrame=window[c[a]+"RequestAnimationFrame"];window.cancelAnimationFrame=window[c[a]+"CancelAnimationFrame"]||window[c[a]+"CancelRequestAnimationFrame"]}if(!window.requestAnimationFrame){window.requestAnimationFrame=function(h,e){var d=new Date().getTime();var f=Math.max(0,16-(d-b));var g=window.setTimeout(function(){h(d+f)},f);b=d+f;return g}}if(!window.cancelAnimationFrame){window.cancelAnimationFrame=function(d){clearTimeout(d)}}}());
+
+            /*
+            * Point class
+            */
+            var Point = (function() {
+                function Point(x, y) {
+                    this.x = (typeof x !== 'undefined') ? x : 0;
+                    this.y = (typeof y !== 'undefined') ? y : 0;
+                }
+                Point.prototype.clone = function() {
+                    return new Point(this.x, this.y);
+                };
+                Point.prototype.length = function(length) {
+                    if (typeof length == 'undefined')
+                        return Math.sqrt(this.x * this.x + this.y * this.y);
+                    this.normalize();
+                    this.x *= length;
+                    this.y *= length;
+                    return this;
+                };
+                Point.prototype.normalize = function() {
+                    var length = this.length();
+                    this.x /= length;
+                    this.y /= length;
+                    return this;
+                };
+                return Point;
+            })();
+
+            /*
+            * Particle class
+            */
+            var Particle = (function() {
+                function Particle() {
+                    this.position = new Point();
+                    this.velocity = new Point();
+                    this.acceleration = new Point();
+                    this.age = 0;
+                }
+                Particle.prototype.initialize = function(x, y, dx, dy) {
+                    this.position.x = x;
+                    this.position.y = y;
+                    this.velocity.x = dx;
+                    this.velocity.y = dy;
+                    this.acceleration.x = dx * settings.particles.effect;
+                    this.acceleration.y = dy * settings.particles.effect;
+                    this.age = 0;
+                };
+                Particle.prototype.update = function(deltaTime) {
+                    this.position.x += this.velocity.x * deltaTime;
+                    this.position.y += this.velocity.y * deltaTime;
+                    this.velocity.x += this.acceleration.x * deltaTime;
+                    this.velocity.y += this.acceleration.y * deltaTime;
+                    this.age += deltaTime;
+                };
+                Particle.prototype.draw = function(context, image) {
+                    function ease(t) {
+                        return (--t) * t * t + 1;
+                    }
+                    var size = image.width * ease(this.age / settings.particles.duration);
+                    context.globalAlpha = 1 - this.age / settings.particles.duration;
+                    context.drawImage(image, this.position.x - size / 2, this.position.y - size / 2, size, size);
+                };
+                return Particle;
+            })();
+
+            /*
+            * ParticlePool class
+            */
+            var ParticlePool = (function() {
+                var particles,
+                    firstActive = 0,
+                    firstFree   = 0,
+                    duration    = settings.particles.duration;
+
+                function ParticlePool(length) {
+                    // create and populate particle pool
+                    particles = new Array(length);
+                    for (var i = 0; i < particles.length; i++)
+                        particles[i] = new Particle();
+                }
+                ParticlePool.prototype.add = function(x, y, dx, dy) {
+                    particles[firstFree].initialize(x, y, dx, dy);
+                
+                    // handle circular queue
+                    firstFree++;
+                    if (firstFree   == particles.length) firstFree   = 0;
+                    if (firstActive == firstFree       ) firstActive++;
+                    if (firstActive == particles.length) firstActive = 0;
+                };
+                ParticlePool.prototype.update = function(deltaTime) {
+                    var i;
+                
+                    // update active particles
+                    if (firstActive < firstFree) {
+                        for (i = firstActive; i < firstFree; i++)
+                            particles[i].update(deltaTime);
+                    }
+                    if (firstFree < firstActive) {
+                        for (i = firstActive; i < particles.length; i++)
+                            particles[i].update(deltaTime);
+                        for (i = 0; i < firstFree; i++)
+                            particles[i].update(deltaTime);
+                    }
+                
+                    // remove inactive particles
+                    while (particles[firstActive].age >= duration && firstActive != firstFree) {
+                        firstActive++;
+                        if (firstActive == particles.length) firstActive = 0;
+                    }
+                };
+                ParticlePool.prototype.draw = function(context, image) {
+                    // draw active particles
+                    if (firstActive < firstFree) {
+                        for (i = firstActive; i < firstFree; i++)
+                            particles[i].draw(context, image);
+                    }
+                    if (firstFree < firstActive) {
+                        for (i = firstActive; i < particles.length; i++)
+                            particles[i].draw(context, image);
+                        for (i = 0; i < firstFree; i++)
+                            particles[i].draw(context, image);
+                    }
+                };
+                return ParticlePool;
+            })();
+
+            /*
+            * Putting it all together
+            */
+            (function(canvas) {
+                var context = canvas.getContext('2d'),
+                    particles = new ParticlePool(settings.particles.length),
+                    particleRate = settings.particles.length / settings.particles.duration, // particles/sec
+                    time;
+
+                // get point on heart with -PI <= t <= PI
+                function pointOnHeart(t) {
+                    return new Point(
+                        160 * Math.pow(Math.sin(t), 3),
+                        130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
+                    );
+                }
+
+                // creating the particle image using a dummy canvas
+                var image = (function() {
+                    var canvas  = document.createElement('canvas'),
+                        context = canvas.getContext('2d');
+                    canvas.width  = settings.particles.size;
+                    canvas.height = settings.particles.size;
+                    // helper function to create the path
+                    function to(t) {
+                        var point = pointOnHeart(t);
+                        point.x = settings.particles.size / 2 + point.x * settings.particles.size / 350;
+                        point.y = settings.particles.size / 2 - point.y * settings.particles.size / 350;
+                        return point;
+                    }
+                    // create the path
+                    context.beginPath();
+                    var t = -Math.PI;
+                    var point = to(t);
+                    context.moveTo(point.x, point.y);
+                    while (t < Math.PI) {
+                        t += 0.01; // baby steps!
+                        point = to(t);
+                        context.lineTo(point.x, point.y);
+                    }
+                    context.closePath();
+                    // create the fill
+                    context.fillStyle = '#e80c29';
+                    context.fill();
+                    // create the image
+                    var image = new Image();
+                    image.src = canvas.toDataURL();
+                    return image;
+                })();
+
+                // render that thing!
+                function render() {
+                    // next animation frame
+                    requestAnimationFrame(render);
+                
+                    // update time
+                    var newTime   = new Date().getTime() / 1000,
+                        deltaTime = newTime - (time || newTime);
+                    time = newTime;
+                
+                    // clear canvas
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                
+                    // create new particles
+                    var amount = particleRate * deltaTime;
+                    for (var i = 0; i < amount; i++) {
+                        var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
+                        var dir = pos.clone().length(settings.particles.velocity);
+                        particles.add(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, dir.x, -dir.y);
+                    }
+                
+                    // update and draw particles
+                    particles.update(deltaTime);
+                    particles.draw(context, image);
+                }
+
+                // handle (re-)sizing of the canvas
+                function onResize() {
+                    canvas.width  = canvas.clientWidth;
+                    canvas.height = canvas.clientHeight;
+                }
+                window.onresize = onResize;
+
+                // delay rendering bootstrap
+                setTimeout(function() {
+                    onResize();
+                    render();
+                }, 10);
+            })(document.getElementById('pinkboard'));
+        }
+    </script>
+</body>
+</html>
